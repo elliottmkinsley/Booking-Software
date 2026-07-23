@@ -12,11 +12,22 @@ the mock service layer in `src/services/`.
 
 ## Live demo
 
-Deployed automatically to GitHub Pages on every push to `main`:
-https://elliottmkinsley.github.io/Booking-Software/
+**Site URL:** https://elliottmkinsley.github.io/Booking-Software/
 
-Note: with no backend yet, all data is per-browser (sessionStorage), so
-bookings made on one device are not visible on another.
+Every push to `main` rebuilds and publishes to the `gh-pages` branch via GitHub Actions.
+
+### One-time enable (repo owner, ~30 seconds)
+
+GitHub Pages must be turned on once in the repo:
+
+1. Open [Booking-Software → Settings → Pages](https://github.com/elliottmkinsley/Booking-Software/settings/pages)
+2. Under **Build and deployment → Source**, choose **Deploy from a branch**
+3. Set **Branch** to `gh-pages` and folder to **`/ (root)`**, then click **Save**
+4. Wait 1–2 minutes for the site to go live at the URL above
+
+After that, future pushes to `main` update the live site automatically.
+
+Note: with no backend yet, all data is per-browser (sessionStorage), so bookings made on one device are not visible on another.
 
 ## Running locally
 

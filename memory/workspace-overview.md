@@ -66,13 +66,15 @@ both LabDetailPage and the main menu's software section.
 
 ## Deployment (added 2026-07-23)
 - GitHub repo: https://github.com/elliottmkinsley/Booking-Software
-- Live site: https://elliottmkinsley.github.io/Booking-Software/ via GitHub
-  Pages, deployed by `.github/workflows/deploy.yml` on every push to `main`.
-- Because of Pages static hosting, the app uses HashRouter (URLs like /#/labs)
-  and vite.config.ts sets base "/Booking-Software/" for production builds only.
-  Keep both if touching routing or the build config.
+- Live site: https://elliottmkinsley.github.io/Booking-Software/
+- Workflow: `.github/workflows/deploy.yml` builds with Vite and pushes `dist/`
+  to the `gh-pages` branch (peaceiris/actions-gh-pages).
+- **One-time manual step:** repo owner must enable Pages at Settings → Pages,
+  source = Deploy from branch → `gh-pages` → `/ (root)`. Until that is done,
+  the workflow succeeds but the public URL returns 404.
+- HashRouter (URLs like /#/labs) + vite base `/Booking-Software/` for prod
+  builds only. Keep both when touching routing or build config.
 - Data is still per-browser sessionStorage; devices do not share bookings.
-  This is expected until the Azure backend exists.
 
 ## Seed data note
 Labs and equipment in `src/data/mockData.ts` are plausible placeholders invented
