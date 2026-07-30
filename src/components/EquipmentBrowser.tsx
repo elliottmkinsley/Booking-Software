@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { canManageEquipment } from "../roles";
 import type { Equipment } from "../types";
-import BookingModal from "./BookingModal";
 
 interface EquipmentBrowserProps {
   items: Equipment[];
@@ -20,9 +21,8 @@ export default function EquipmentBrowser({
   onChanged,
 }: EquipmentBrowserProps) {
   const { user } = useAuth();
-  const isAdmin = user?.isAdmin ?? false;
+  const canManage = canManageEquipment(user);
 
-  const [bookingItem, setBookingItem] = useState<Equipment | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
@@ -44,7 +44,7 @@ export default function EquipmentBrowser({
 
   return (
     <>
-      {isAdmin && (
+      {canManage && (
         <div className="admin-toolbar">
           <button
             type="button"
@@ -56,7 +56,7 @@ export default function EquipmentBrowser({
         </div>
       )}
 
-      {isAdmin && showAddForm && (
+      {canManage && showAddForm && (
         <form onSubmit={handleAdd} className="add-equipment-form">
           <h3>New {itemLabel.toLowerCase()}</h3>
           <label className="field">
@@ -93,7 +93,9 @@ export default function EquipmentBrowser({
             <li key={item.id} className="equipment-row">
               <div className="equipment-info">
                 <div className="equipment-title">
-                  <h4>{item.name}</h4>
+                  <h4>
+                    <Link to={`/equipment/${item.id}`}>{item.name}</Link>
+                  </h4>
                   <span className={`badge badge-${item.category}`}>
                     {item.category}
                   </span>
@@ -105,27 +107,12 @@ export default function EquipmentBrowser({
                 </div>
                 <p className="muted">{item.description}</p>
               </div>
-              {!isAdmin && (
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  disabled={item.status !== "available"}
-                  onClick={() => setBookingItem(item)}
-                >
-                  Book
-                </button>
-              )}
+              <Link to={`/equipment/${item.id}`} className="btn btn-outline">
+                View details
+              </Link>
             </li>
           ))}
         </ul>
-      )}
-
-      {bookingItem && (
-        <BookingModal
-          equipment={bookingItem}
-          onClose={() => setBookingItem(null)}
-          onBooked={onChanged}
-        />
       )}
     </>
   );

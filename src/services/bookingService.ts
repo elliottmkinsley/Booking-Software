@@ -9,9 +9,16 @@ export async function getBookingsForEquipment(
   return store.bookings.filter((b) => b.equipmentId === equipmentId);
 }
 
+export async function getBookingsForUser(userId: string): Promise<Booking[]> {
+  return store.bookings
+    .filter((b) => b.userId === userId)
+    .sort((a, b) => b.startDate.localeCompare(a.startDate));
+}
+
 export async function createBooking(input: {
   equipmentId: string;
   userId: string;
+  userName: string;
   startDate: string;
   endDate: string;
 }): Promise<Booking> {

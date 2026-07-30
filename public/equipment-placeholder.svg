@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="No photo available">
+  <rect width="480" height="320" fill="#e8edf5" />
+  <g fill="none" stroke="#a9b6cb" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="168" y="120" width="144" height="100" rx="12" />
+    <path d="M204 120l12-20h48l12 20" />
+    <circle cx="240" cy="170" r="28" />
+  </g>
+  <text x="240" y="266" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="20" fill="#8494ad">
+    No photo yet
+  </text>
+</svg>

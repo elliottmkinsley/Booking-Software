@@ -1,5 +1,11 @@
-import { seedBookings, seedEquipment, seedLabs } from "../data/mockData";
-import type { Booking, Equipment, Lab } from "../types";
+import {
+  seedBookings,
+  seedEquipment,
+  seedLabs,
+  seedPeople,
+  seedTrainings,
+} from "../data/mockData";
+import type { Booking, Equipment, Lab, Person, Training } from "../types";
 
 // In-memory store shared by the mock services. Persisted to sessionStorage so
 // added equipment and bookings survive page refreshes during a session.
@@ -9,11 +15,13 @@ interface StoreShape {
   labs: Lab[];
   equipment: Equipment[];
   bookings: Booking[];
+  people: Person[];
+  trainings: Training[];
 }
 
 // Bump the version suffix whenever the seed data shape changes so stale
 // sessionStorage copies are discarded.
-const STORAGE_KEY = "radiant-mock-store-v2";
+const STORAGE_KEY = "radiant-mock-store-v3";
 
 function load(): StoreShape {
   const raw = sessionStorage.getItem(STORAGE_KEY);
@@ -28,6 +36,8 @@ function load(): StoreShape {
     labs: [...seedLabs],
     equipment: [...seedEquipment],
     bookings: [...seedBookings],
+    people: [...seedPeople],
+    trainings: [...seedTrainings],
   };
 }
 

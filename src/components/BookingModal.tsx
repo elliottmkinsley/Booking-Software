@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
 import { createBooking } from "../services/bookingService";
 import type { Equipment } from "../types";
+import { formatDateRange, todayIso } from "../utils/dates";
 
 interface BookingModalProps {
   equipment: Equipment;
@@ -15,7 +16,7 @@ export default function BookingModal({
   onBooked,
 }: BookingModalProps) {
   const { user } = useAuth();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayIso();
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
   const [error, setError] = useState("");
@@ -36,6 +37,7 @@ export default function BookingModal({
     await createBooking({
       equipmentId: equipment.id,
       userId: user.id,
+      userName: user.username,
       startDate,
       endDate,
     });
@@ -48,20 +50,24 @@ export default function BookingModal({
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         {confirmed ? (
           <>
-            <h3>Booking confirmed</h3>
+            <h3>Reservation confirmed</h3>
             <p className="muted">
-              <strong>{equipment.name}</strong> is booked from {startDate} to{" "}
-              {endDate}.
+              <strong>{equipment.name}</strong> is reserved for{" "}
+              {formatDateRange(startDate, endDate)}.
             </p>
             <div className="modal-actions">
-              <button type="button" className="btn btn-primary" onClick={onClose}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onClose}
+              >
                 Done
               </button>
             </div>
           </>
         ) : (
           <>
-            <h3>Book {equipment.name}</h3>
+            <h3>Reserve {equipment.name}</h3>
             <p className="muted">{equipment.description}</p>
             <form onSubmit={handleSubmit} className="modal-form">
               <label className="field">
@@ -84,11 +90,15 @@ export default function BookingModal({
               </label>
               {error && <p className="form-error">{error}</p>}
               <div className="modal-actions">
-                <button type="button" className="btn btn-ghost" onClick={onClose}>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={onClose}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  Confirm Booking
+                  Confirm Reservation
                 </button>
               </div>
             </form>

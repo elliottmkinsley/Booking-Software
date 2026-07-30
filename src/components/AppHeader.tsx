@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ROLE_LABELS } from "../roles";
 
 export default function AppHeader() {
   const { user, signOut } = useAuth();
@@ -19,9 +20,19 @@ export default function AppHeader() {
       <div className="header-user">
         {user && (
           <>
-            <span className="header-username">{user.username}</span>
-            {user.isAdmin && <span className="badge badge-admin">Admin</span>}
-            <button type="button" className="btn btn-ghost" onClick={handleSignOut}>
+            <Link to="/profile" className="header-profile">
+              <span className="header-username">{user.username}</span>
+              {user.role !== "user" && (
+                <span className={`badge badge-role-${user.role}`}>
+                  {ROLE_LABELS[user.role]}
+                </span>
+              )}
+            </Link>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={handleSignOut}
+            >
               Sign Out
             </button>
           </>

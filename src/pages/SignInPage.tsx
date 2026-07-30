@@ -1,7 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ROLE_LABELS, SIGN_IN_ROLES } from "../roles";
 import { signIn as signInRequest } from "../services/authService";
+import type { UserRole } from "../types";
+
+const ROLE_HINTS: Record<UserRole, string> = {
+  user: "Browse labs and reserve equipment or software.",
+  labOwner: "Manage the inventory for the labs you own.",
+  admin: "Full access across every lab in the center.",
+};
 
 export default function SignInPage() {
   const { signIn } = useAuth();
@@ -10,7 +18,7 @@ export default function SignInPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [role, setRole] = useState<UserRole>("user");
   const [error, setError] = useState("");
   const [signUpNotice, setSignUpNotice] = useState(false);
 
@@ -21,7 +29,7 @@ export default function SignInPage() {
       return;
     }
     setError("");
-    const user = await signInRequest(username.trim(), password, isAdmin);
+    const user = await signInRequest(username.trim(), password, role);
     signIn(user);
     navigate("/labs");
   }
@@ -80,14 +88,31 @@ export default function SignInPage() {
                 placeholder="Enter your password"
               />
             </label>
-            <label className="checkbox-field">
-              <input
-                type="checkbox"
-                checked={isAdmin}
-                onChange={(e) => setIsAdmin(e.target.checked)}
-              />
-              <span>Sign in as Admin</span>
-            </label>
+
+            <fieldset className="role-select">
+              <legend>Sign in as</legend>
+              {SIGN_IN_ROLES.map((option) => (
+                <label
+                  key={option}
+                  className={
+                    role === option ? "role-option selected" : "role-option"
+                  }
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value={option}
+                    checked={role === option}
+                    onChange={() => setRole(option)}
+                  />
+                  <span className="role-option-text">
+                    <strong>{ROLE_LABELS[option]}</strong>
+                    <small>{ROLE_HINTS[option]}</small>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+
             {error && <p className="form-error">{error}</p>}
             <button type="submit" className="btn btn-primary btn-block">
               Sign In

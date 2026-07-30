@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AppHeader from "../components/AppHeader";
 import EquipmentBrowser from "../components/EquipmentBrowser";
 import { useAuth } from "../context/AuthContext";
+import { canManageEquipment } from "../roles";
 import {
   addEquipment,
   getEquipmentCountForLab,
@@ -48,9 +49,9 @@ export default function MainMenuPage() {
         <div className="page-intro">
           <h2>Labs</h2>
           <p className="muted">
-            {user?.isAdmin
+            {canManageEquipment(user)
               ? "Select a lab to view its inventory or add new equipment."
-              : "Select a lab to browse and book equipment."}
+              : "Select a lab to browse and reserve equipment."}
           </p>
         </div>
         {loading ? (

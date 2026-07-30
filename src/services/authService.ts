@@ -1,4 +1,4 @@
-import type { User } from "../types";
+import type { User, UserRole } from "../types";
 
 // MOCK IMPLEMENTATION
 // When the Azure backend exists, replace the body of signIn with a fetch()
@@ -7,12 +7,18 @@ import type { User } from "../types";
 export async function signIn(
   username: string,
   _password: string,
-  isAdmin: boolean
+  role: UserRole
 ): Promise<User> {
   // Any credentials are accepted for now; real validation comes with the DB.
+  // The role is picked on the sign-in form instead of being looked up.
   return {
     id: `user-${username.toLowerCase()}`,
     username,
-    isAdmin,
+    role,
   };
+}
+
+/** Placeholder until the directory provides real addresses. */
+export function emailForUser(user: User): string {
+  return `${user.username.toLowerCase()}@nau.edu`;
 }
