@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Spectralon Calibration Panel">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#422006"/>
+    <stop offset="100%" stop-color="#78350f"/>
+  </linearGradient>
+</defs>
+<rect width="640" height="400" fill="url(#bg)"/>
+<rect x="170" y="90" width="300" height="220" rx="12" fill="#292524"/>
+<rect x="200" y="120" width="240" height="160" rx="6" fill="#fafaf9"/>
+<rect x="220" y="140" width="200" height="120" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="2"/>
+<text x="320" y="210" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="18" fill="#a8a29e">99% Reflectance</text>
+<text x="320" y="372" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="600" fill="#f8fafc">Spectralon Calibration Panel</text>
+</svg>

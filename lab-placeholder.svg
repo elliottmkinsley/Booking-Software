@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="No lab photo available">
+  <rect width="480" height="300" fill="#e3ebf7" />
+  <g fill="none" stroke="#9fb1cd" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 96h44M172 96v46l-40 66a16 16 0 0 0 14 24h92a16 16 0 0 0 14-24l-40-66V96" />
+    <path d="M146 186h84" />
+    <path d="M292 210v-72a14 14 0 0 1 14-14h24a14 14 0 0 1 14 14v72" />
+    <path d="M286 210h64" />
+  </g>
+  <text x="240" y="256" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="19" fill="#8093b0">
+    Lab photo coming soon
+  </text>
+</svg>

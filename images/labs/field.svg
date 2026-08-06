@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Field Instruments Lab">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#fde68a"/>
+    <stop offset="40%" stop-color="#fdba74"/>
+    <stop offset="40%" stop-color="#92400e"/>
+    <stop offset="70%" stop-color="#a16207"/>
+    <stop offset="70%" stop-color="#ca8a04"/>
+    <stop offset="100%" stop-color="#eab308"/>
+  </linearGradient>
+</defs>
+<rect width="640" height="400" fill="url(#sky)"/>
+<path d="M0 220 L120 140 L220 200 L340 110 L480 190 L640 130 L640 400 L0 400 Z" fill="#78716c"/>
+<path d="M0 280 L200 250 L400 290 L640 240 L640 400 L0 400 Z" fill="#a8a29e" opacity=".5"/>
+<g transform="translate(420 240)">
+  <rect x="-6" y="-70" width="12" height="90" fill="#f8fafc"/>
+  <circle cx="0" cy="-78" r="16" fill="#ef4444"/>
+  <circle cx="0" cy="-78" r="7" fill="#fecaca"/>
+</g>
+<text x="320" y="372" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="600" fill="#1c1917">Field Instruments Lab</text>
+</svg>
