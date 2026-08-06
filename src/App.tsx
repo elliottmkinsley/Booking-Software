@@ -5,6 +5,8 @@ import LabDetailPage from "./pages/LabDetailPage";
 import MainMenuPage from "./pages/MainMenuPage";
 import ProfilePage from "./pages/ProfilePage";
 import SignInPage from "./pages/SignInPage";
+import TrainingDetailPage from "./pages/TrainingDetailPage";
+import TrainingsPage from "./pages/TrainingsPage";
 
 function RequireAuth() {
   const { user } = useAuth();
@@ -20,6 +22,8 @@ export default function App() {
         <Route path="/labs" element={<MainMenuPage />} />
         <Route path="/labs/:labId" element={<LabDetailPage />} />
         <Route path="/equipment/:equipmentId" element={<EquipmentDetailPage />} />
+        <Route path="/trainings" element={<TrainingsPage />} />
+        <Route path="/trainings/:trainingId" element={<TrainingDetailPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

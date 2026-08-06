@@ -1,6 +1,12 @@
 import { useMemo, useState } from "react";
 import type { Booking } from "../types";
-import { bookingCoversDate, formatDateRange, isoDate, todayIso } from "../utils/dates";
+import {
+  bookingCoversDate,
+  buildMonthCells,
+  formatDayLabel,
+  todayIso,
+} from "../utils/dates";
+import { formatBookingWhen } from "../utils/timeSlots";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = [
@@ -20,40 +26,39 @@ const MONTH_NAMES = [
 
 interface BookingCalendarProps {
   bookings: Booking[];
+  /** Days the user has picked; clicking a picked day unpicks it. */
+  selectedDates: string[];
+  onToggleDate: (date: string) => void;
+  onClearDates: () => void;
+  /** Shown only when the user is allowed to book this item. */
+  canReserve: boolean;
+  onReserveSelected: () => void;
 }
 
-export default function BookingCalendar({ bookings }: BookingCalendarProps) {
+export default function BookingCalendar({
+  bookings,
+  selectedDates,
+  onToggleDate,
+  onClearDates,
+  canReserve,
+  onReserveSelected,
+}: BookingCalendarProps) {
   const today = todayIso();
   const [cursor, setCursor] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
-
-  // Leading nulls pad the grid so the 1st lands on the right weekday.
-  const cells = useMemo(() => {
-    const leadingBlanks = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const result: (string | null)[] = Array(leadingBlanks).fill(null);
-    for (let day = 1; day <= daysInMonth; day += 1) {
-      result.push(isoDate(new Date(year, month, day)));
-    }
-    return result;
-  }, [year, month]);
+  const cells = useMemo(() => buildMonthCells(year, month), [year, month]);
 
   function bookingsOn(date: string): Booking[] {
     return bookings.filter((booking) => bookingCoversDate(booking, date));
   }
 
-  function changeMonth(delta: number) {
-    setCursor(new Date(year, month + delta, 1));
-    setSelectedDate(null);
-  }
-
-  const selectedBookings = selectedDate ? bookingsOn(selectedDate) : [];
+  const sortedSelection = [...selectedDates].sort();
+  const pastSelected = sortedSelection.filter((date) => date < today);
 
   return (
     <div className="calendar">
@@ -61,7 +66,7 @@ export default function BookingCalendar({ bookings }: BookingCalendarProps) {
         <button
           type="button"
           className="btn btn-ghost"
-          onClick={() => changeMonth(-1)}
+          onClick={() => setCursor(new Date(year, month - 1, 1))}
           aria-label="Previous month"
         >
           &lsaquo;
@@ -72,7 +77,7 @@ export default function BookingCalendar({ bookings }: BookingCalendarProps) {
         <button
           type="button"
           className="btn btn-ghost"
-          onClick={() => changeMonth(1)}
+          onClick={() => setCursor(new Date(year, month + 1, 1))}
           aria-label="Next month"
         >
           &rsaquo;
@@ -90,16 +95,18 @@ export default function BookingCalendar({ bookings }: BookingCalendarProps) {
             return <span key={`blank-${index}`} className="calendar-blank" />;
           }
           const count = bookingsOn(date).length;
+          const picked = selectedDates.includes(date);
           const classes = ["calendar-day"];
           if (count > 0) classes.push("has-bookings");
           if (date === today) classes.push("is-today");
-          if (date === selectedDate) classes.push("is-selected");
+          if (picked) classes.push("is-picked");
           return (
             <button
               key={date}
               type="button"
               className={classes.join(" ")}
-              onClick={() => setSelectedDate(date)}
+              aria-pressed={picked}
+              onClick={() => onToggleDate(date)}
             >
               <span className="calendar-day-number">
                 {Number(date.slice(8, 10))}
@@ -111,26 +118,69 @@ export default function BookingCalendar({ bookings }: BookingCalendarProps) {
       </div>
 
       <div className="calendar-detail">
-        {!selectedDate ? (
+        {sortedSelection.length === 0 ? (
           <p className="muted">
-            Select a day to see who reserved this item. Highlighted days already
-            have reservations.
+            Click any day to select it — click it again to unselect. Pick as
+            many days as you like. Highlighted days already have reservations.
           </p>
-        ) : selectedBookings.length === 0 ? (
-          <p className="muted">No reservations on {selectedDate}.</p>
         ) : (
           <>
-            <h4>Reservations on {selectedDate}</h4>
-            <ul className="calendar-booking-list">
-              {selectedBookings.map((booking) => (
-                <li key={booking.id}>
-                  <strong>{booking.userName}</strong>
+            <div className="calendar-selection-head">
+              <h4>
+                {sortedSelection.length} day
+                {sortedSelection.length === 1 ? "" : "s"} selected:{" "}
+                {sortedSelection.map((date) => formatDayLabel(date)).join(", ")}
+              </h4>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={onClearDates}
+              >
+                Clear
+              </button>
+            </div>
+
+            {sortedSelection.map((date) => {
+              const dayBookings = bookingsOn(date);
+              return (
+                <div key={date} className="calendar-day-detail">
+                  <strong>{formatDayLabel(date)}</strong>
+                  {dayBookings.length === 0 ? (
+                    <p className="muted">No reservations yet.</p>
+                  ) : (
+                    <ul className="calendar-booking-list">
+                      {dayBookings.map((booking) => (
+                        <li key={booking.id}>
+                          <strong>{booking.userName}</strong>
+                          <span className="muted">
+                            {formatBookingWhen(booking)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+
+            {canReserve && (
+              <div className="calendar-reserve-row">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={pastSelected.length === sortedSelection.length}
+                  onClick={onReserveSelected}
+                >
+                  Reserve selected day
+                  {sortedSelection.length === 1 ? "" : "s"}
+                </button>
+                {pastSelected.length > 0 && (
                   <span className="muted">
-                    {formatDateRange(booking.startDate, booking.endDate)}
+                    Past days are ignored when reserving.
                   </span>
-                </li>
-              ))}
-            </ul>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

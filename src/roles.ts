@@ -11,7 +11,16 @@ export const ROLE_LABELS: Record<UserRole, string> = {
 
 export const SIGN_IN_ROLES: UserRole[] = ["user", "labOwner", "admin"];
 
-/** Admins and lab owners manage inventory; standard users only browse it. */
+export function canManageLabManagers(user: User | null): boolean {
+  return user?.role === "admin";
+}
+
+/** Standard users can request access to catalog trainings. */
+export function canRequestTrainings(user: User | null): boolean {
+  return user?.role === "user";
+}
+
+/** @deprecated Use permissionsService helpers for granular checks. */
 export function canManageEquipment(user: User | null): boolean {
   return user?.role === "admin" || user?.role === "labOwner";
 }

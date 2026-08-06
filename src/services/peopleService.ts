@@ -3,6 +3,10 @@ import { store } from "./mockStore";
 
 // MOCK IMPLEMENTATION - replace bodies with fetch() calls when the API exists.
 
+export async function getPeople(): Promise<Person[]> {
+  return [...store.people].sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export async function getPerson(
   personId: string
 ): Promise<Person | undefined> {

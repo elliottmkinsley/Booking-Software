@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" role="img" aria-label="No software image available">
+  <rect width="480" height="300" fill="#e6f2ea" />
+  <g fill="none" stroke="#9dc0ac" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="148" y="90" width="184" height="126" rx="12" />
+    <path d="M148 122h184" />
+    <circle cx="170" cy="106" r="4" />
+    <circle cx="188" cy="106" r="4" />
+    <path d="M196 150l-22 22 22 22M266 150l22 22-22 22M236 146l-12 52" />
+  </g>
+  <text x="240" y="258" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="19" fill="#7ba18b">
+    Software license
+  </text>
+</svg>

@@ -31,3 +31,53 @@ export function bookingCoversDate(
 export function formatDateRange(startDate: string, endDate: string): string {
   return startDate === endDate ? startDate : `${startDate} to ${endDate}`;
 }
+
+/** Parsed at noon so DST shifts can never move the date. */
+export function parseIsoDate(date: string): Date {
+  return new Date(`${date}T12:00:00`);
+}
+
+export function daysBetween(from: string, to: string): number {
+  const ms = parseIsoDate(to).getTime() - parseIsoDate(from).getTime();
+  return Math.round(ms / 86_400_000);
+}
+
+/**
+ * Month grid cells with leading nulls so the 1st lands on the right weekday.
+ */
+export function buildMonthCells(
+  year: number,
+  month: number
+): (string | null)[] {
+  const leadingBlanks = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cells: (string | null)[] = Array(leadingBlanks).fill(null);
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    cells.push(isoDate(new Date(year, month, day)));
+  }
+  return cells;
+}
+
+/** Collapses a set of picked days into the fewest start/end ranges. */
+export function mergeContiguousDates(
+  dates: string[]
+): { start: string; end: string }[] {
+  const sorted = [...new Set(dates)].sort();
+  const ranges: { start: string; end: string }[] = [];
+  for (const date of sorted) {
+    const last = ranges[ranges.length - 1];
+    if (last && daysBetween(last.end, date) === 1) {
+      last.end = date;
+    } else {
+      ranges.push({ start: date, end: date });
+    }
+  }
+  return ranges;
+}
+
+export function formatDayLabel(date: string): string {
+  return parseIsoDate(date).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+}

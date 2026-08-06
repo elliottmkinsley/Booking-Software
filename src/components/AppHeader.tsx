@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import HeaderNav from "./HeaderNav";
+import NotificationBell from "./NotificationBell";
 import { ROLE_LABELS } from "../roles";
 
 export default function AppHeader() {
@@ -17,9 +19,11 @@ export default function AppHeader() {
         <span className="header-logo">R</span>
         <span>Radiant Booking</span>
       </Link>
+      <HeaderNav />
       <div className="header-user">
         {user && (
           <>
+            <NotificationBell />
             <Link to="/profile" className="header-profile">
               <span className="header-username">{user.username}</span>
               {user.role !== "user" && (
