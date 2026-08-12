@@ -6,9 +6,9 @@ Radiant Center for Remote Sensing at NAU.
 ## Status
 
 UI/design phase. All data is mocked in the frontend; no backend or database
-exists yet. Sign-in accepts any username/password (check "Sign in as Admin"
-to get admin capabilities). A future Azure-hosted database and API will replace
-the mock service layer in `src/services/`.
+exists yet. Sign-in accepts any username/password; pick Standard User, Lab
+Owner, or Admin on the form to choose what you can do. A future Azure-hosted
+database and API will replace the mock service layer in `src/services/`.
 
 ## Live demo
 
@@ -31,12 +31,24 @@ Note: with no backend yet, all data is per-browser (sessionStorage), so bookings
 
 ## Running locally
 
+Requires [Node.js](https://nodejs.org/) 20 or newer (CI builds on 22).
+
 ```bash
+git clone https://github.com/elliottmkinsley/Booking-Software.git
+cd Booking-Software
 npm install
 npm run dev
 ```
 
 Then open the URL Vite prints (default http://localhost:5173).
+
+To check a production build the way GitHub Pages serves it, the base path has
+to be passed explicitly, because `vite.config.ts` only applies it on `build`:
+
+```bash
+npm run build
+npx vite preview --base=/Booking-Software/
+```
 
 ## Tech stack
 
