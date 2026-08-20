@@ -1,0 +1,164 @@
+// Radiant Booking — target Azure SQL schema
+// Open at https://dbdiagram.io → Import → DBML
+// Or paste this file into the editor.
+
+Project radiant_booking {
+  database_type: 'SQL Server'
+  Note: 'Target schema for Azure hookup. Unifies User/Account/Person into Users.'
+}
+
+Table Users {
+  id uniqueidentifier [pk]
+  username nvarchar(100) [unique, not null]
+  display_name nvarchar(200) [not null]
+  email nvarchar(256) [unique, not null]
+  password_hash nvarchar(500) [null, note: 'Null if Entra ID only']
+  title nvarchar(200) [null, note: 'Staff title (from old Person)']
+  is_active bit [not null, default: 1]
+  created_at datetime2 [not null]
+
+  Note: 'Replaces mock accounts + session User + people'
+}
+
+Table UserRoles {
+  user_id uniqueidentifier [pk, ref: > Users.id]
+  role nvarchar(32) [pk, note: 'user | lab_manager | trainer | admin']
+
+  Note: 'From labManagerAccountIds, trainerAccountIds, admin'
+}
+
+Table Labs {
+  id uniqueidentifier [pk]
+  name nvarchar(200) [not null]
+  description nvarchar(max) [not null]
+  image_url nvarchar(1000) [null]
+}
+
+Table LabManagerLabs {
+  user_id uniqueidentifier [pk, ref: > Users.id]
+  lab_id uniqueidentifier [pk, ref: > Labs.id]
+
+  Note: 'From labManagerLabIds map'
+}
+
+Table Equipment {
+  id uniqueidentifier [pk]
+  lab_id uniqueidentifier [null, ref: > Labs.id, note: 'Null for software']
+  name nvarchar(200) [not null]
+  description nvarchar(max) [not null]
+  category nvarchar(32) [not null, note: 'equipment | software']
+  status nvarchar(32) [not null, note: 'available | maintenance']
+  rental_granularity nvarchar(32) [not null, note: '30min | hourly | daily | weekly']
+  owner_user_id uniqueidentifier [null, ref: > Users.id]
+  image_url nvarchar(1000) [null]
+  user_guide_url nvarchar(1000) [null]
+  download_url nvarchar(1000) [null, note: 'Software only']
+  access_instructions nvarchar(max) [null, note: 'Software only']
+  contact_name nvarchar(200) [null, note: 'Software only']
+  contact_email nvarchar(256) [null, note: 'Software only']
+
+  Note: 'category=software => lab_id null; category=equipment => lab_id required'
+}
+
+Table Trainings {
+  id uniqueidentifier [pk]
+  name nvarchar(200) [not null]
+  description nvarchar(max) [not null]
+  how_to_complete nvarchar(max) [not null]
+}
+
+Table EquipmentTrainings {
+  equipment_id uniqueidentifier [pk, ref: > Equipment.id]
+  training_id uniqueidentifier [pk, ref: > Trainings.id]
+
+  Note: 'From equipment.trainingIds'
+}
+
+Table EquipmentTrainers {
+  equipment_id uniqueidentifier [pk, ref: > Equipment.id]
+  user_id uniqueidentifier [pk, ref: > Users.id]
+
+  Note: 'From equipment.trainerIds (Account ids today)'
+}
+
+Table Bookings {
+  id uniqueidentifier [pk]
+  equipment_id uniqueidentifier [not null, ref: > Equipment.id]
+  user_id uniqueidentifier [not null, ref: > Users.id]
+  start_date date [not null]
+  end_date date [not null]
+  start_time time [null, note: 'Null = whole day(s)']
+  end_time time [null]
+}
+
+Table UserTrainingEnrollments {
+  user_id uniqueidentifier [pk, ref: > Users.id]
+  training_id uniqueidentifier [pk, ref: > Trainings.id]
+  enrolled_at datetime2 [not null]
+
+  Note: 'From userTrainingIds — Your trainings'
+}
+
+Table TrainingAccessRequests {
+  id uniqueidentifier [pk]
+  training_id uniqueidentifier [not null, ref: > Trainings.id]
+  user_id uniqueidentifier [not null, ref: > Users.id]
+  message nvarchar(max) [not null]
+  status nvarchar(32) [not null, note: 'pending | approved | denied']
+  created_at datetime2 [not null]
+  reviewed_at datetime2 [null]
+  reviewed_by_user_id uniqueidentifier [null, ref: > Users.id]
+}
+
+Table UserTrainingCompletions {
+  user_id uniqueidentifier [pk, ref: > Users.id]
+  training_id uniqueidentifier [pk, ref: > Trainings.id]
+  completed_at datetime2 [not null]
+  approved_by_user_id uniqueidentifier [null, ref: > Users.id]
+  access_request_id uniqueidentifier [null, ref: > TrainingAccessRequests.id]
+
+  Note: 'Replaces approvedTrainingIds + username-hash demo completion'
+}
+
+Table Consumables {
+  id uniqueidentifier [pk]
+  name nvarchar(200) [not null]
+  description nvarchar(max) [not null]
+  lab_id uniqueidentifier [null, ref: > Labs.id]
+  equipment_id uniqueidentifier [null, ref: > Equipment.id]
+  image_url nvarchar(1000) [null]
+  low_notify_enabled bit [not null]
+  status nvarchar(32) [not null, note: 'ok | low']
+  reported_low_at datetime2 [null]
+  reported_low_by_user_id uniqueidentifier [null, ref: > Users.id]
+}
+
+Table Notifications {
+  id uniqueidentifier [pk]
+  type nvarchar(32) [not null, note: 'consumableLow | trainingRequest']
+  created_at datetime2 [not null]
+  summary nvarchar(500) [not null]
+  consumable_id uniqueidentifier [null, ref: > Consumables.id]
+  training_id uniqueidentifier [null, ref: > Trainings.id]
+  request_id uniqueidentifier [null, ref: > TrainingAccessRequests.id]
+  lab_id uniqueidentifier [null, ref: > Labs.id]
+  notify_admin bit [not null]
+}
+
+Table NotificationReads {
+  notification_id uniqueidentifier [pk, ref: > Notifications.id]
+  user_id uniqueidentifier [pk, ref: > Users.id]
+  read_at datetime2 [not null]
+
+  Note: 'From notifications.readByUserIds'
+}
+
+Table ActivityLog {
+  id uniqueidentifier [pk]
+  timestamp datetime2 [not null]
+  actor_user_id uniqueidentifier [not null, ref: > Users.id]
+  action nvarchar(64) [not null]
+  summary nvarchar(500) [not null]
+
+  Note: 'Immutable audit text OK to snapshot'
+}

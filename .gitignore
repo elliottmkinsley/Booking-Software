@@ -1,5 +1,7 @@
 node_modules
 dist
+dist-netlify
 *.tsbuildinfo
 *.local
 .DS_Store
+.Thumbs.db

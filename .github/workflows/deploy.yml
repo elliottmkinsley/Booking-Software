@@ -1,3 +1,6 @@
+# Builds the site and publishes the `dist` folder to the `gh-pages` branch.
+# Runs on every push to main, or when someone clicks "Run workflow" in GitHub.
+
 name: Deploy to GitHub Pages
 
 on:
