@@ -1,7 +1,7 @@
 /**
  * Main navigation in the header.
  *
- * Everyone sees Main menu and Trainings. Extra buttons (Trainers, Lab
+ * Everyone sees Main menu, Calendar, and Trainings. Extra buttons (Trainers, Lab
  * Managers, Activity) only appear for people who are allowed to use them.
  * Those last three open modals instead of changing the page.
  */
@@ -50,6 +50,14 @@ export default function HeaderNav() {
           }
         >
           Main menu
+        </NavLink>
+        <NavLink
+          to="/calendar"
+          className={({ isActive }) =>
+            isActive ? "header-nav-btn header-nav-btn-active" : "header-nav-btn"
+          }
+        >
+          Calendar
         </NavLink>
         <NavLink
           to="/trainings"

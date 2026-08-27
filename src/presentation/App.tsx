@@ -7,6 +7,7 @@
  */
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import CalendarPage from "./pages/CalendarPage";
 import EquipmentDetailPage from "./pages/EquipmentDetailPage";
 import LabDetailPage from "./pages/LabDetailPage";
 import MainMenuPage from "./pages/MainMenuPage";
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/" element={<SignInPage />} />
       <Route element={<RequireAuth />}>
         <Route path="/labs" element={<MainMenuPage />} />
+        <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/labs/:labId" element={<LabDetailPage />} />
         <Route path="/equipment/:equipmentId" element={<EquipmentDetailPage />} />
         <Route path="/trainings" element={<TrainingsPage />} />

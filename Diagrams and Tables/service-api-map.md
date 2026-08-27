@@ -53,6 +53,10 @@ Auth: all mutating routes require a signed-in user; enforce roles server-side.
 | --- | --- |
 | `business/bookings.getBookingsForEquipment` | `GET /api/equipment/{id}/bookings` |
 | `business/bookings.getBookingsForUser` | `GET /api/users/me/bookings` |
+| `business/bookings.getAllBookings` | `GET /api/bookings` |
+| `business/bookings.getBookingsForLab` | `GET /api/labs/{id}/bookings` |
+| `business/bookings.getCalendarBookings` | Same routes with query filters |
+| `business/bookings.getCalendarPeople` | `GET /api/users` (directory for the person filter) |
 | `business/bookings.createBooking` / `createBookings` | `POST /api/equipment/{id}/bookings` (body: array of ranges) |
 
 ## Lab managers & trainers

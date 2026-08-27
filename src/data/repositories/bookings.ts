@@ -4,6 +4,10 @@
 import type { Booking } from "../../shared/types";
 import { nextId, persist, store } from "../mockStore";
 
+export async function listBookings(): Promise<Booking[]> {
+  return [...store.bookings];
+}
+
 export async function listBookingsForEquipment(
   equipmentId: string
 ): Promise<Booking[]> {

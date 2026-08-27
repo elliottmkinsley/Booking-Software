@@ -8,6 +8,7 @@ import {
   getEquipment as getEquipmentRow,
   insertEquipment,
   insertEquipmentBatch,
+  listEquipment,
   listEquipmentForLab,
   listSoftware,
   saveEquipment,
@@ -57,6 +58,17 @@ export async function getEquipmentCountForLab(labId: string): Promise<number> {
 
 export async function getSoftware(): Promise<Equipment[]> {
   return listSoftware();
+}
+
+export async function getAllEquipment(): Promise<Equipment[]> {
+  return listEquipment();
+}
+
+/** Instruments that can be reserved (software is not booked on the calendar). */
+export async function getBookableEquipment(): Promise<Equipment[]> {
+  return (await listEquipment())
+    .filter((item) => item.category === "equipment")
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function addEquipment(
